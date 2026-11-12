@@ -99,7 +99,7 @@ The workflow matrix is:
 
 ## Actual test results
 
-Final GitHub Actions run: <https://github.com/Abram813/f1-telemetry-dashboard/actions/runs/43282091657> (commit `458268a`). The local run used a fresh clone at a path containing spaces: `/private/var/folders/.../opencode/F1 Telemetry Dashboard Test`.
+Final code run: <https://github.com/Abram813/f1-telemetry-dashboard/actions/runs/43282659151> (commit `5a571f8`). The local run used a fresh clone at a path containing spaces: `/private/var/folders/.../opencode/F1 Telemetry Dashboard Test`.
 
 | Environment | OS / CPU architecture | Python | uv | Offline tests (network blocked) | Real-data exercise | App start + action + shutdown |
 |---|---|---|---:|---|---|---|
