@@ -42,6 +42,13 @@ class GuardedSocket(_original_socket):
 socket.socket = GuardedSocket
 
 
+def blocked_getaddrinfo(*args, **kwargs):
+    raise OfflineBlocked("External name resolution is blocked during offline tests")
+
+
+socket.getaddrinfo = blocked_getaddrinfo
+
+
 def blocked_urlopen(*args, **kwargs):
     raise OfflineBlocked("External HTTP access is blocked during offline tests")
 
