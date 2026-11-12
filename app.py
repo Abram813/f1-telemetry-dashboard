@@ -63,7 +63,9 @@ def lap_description(lap):
 
 
 def included_numbers(audit):
-    return ", ".join(str(int(number)) for number in audit.loc[audit["Included"], "LapNumber"])
+    numbers = [int(number) for number in audit.loc[audit["Included"], "LapNumber"]
+               if pd.notna(number)]
+    return ", ".join(str(number) for number in numbers)
 
 
 def excluded_summary(audit):
@@ -71,7 +73,7 @@ def excluded_summary(audit):
     if excluded.empty:
         return "None"
     return "; ".join(
-        f"lap {int(row.LapNumber)} ({row.Reason})"
+        f"lap {int(row.LapNumber) if pd.notna(row.LapNumber) else 'unknown'} ({row.Reason})"
         for row in excluded.itertuples()
     )
 
