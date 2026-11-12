@@ -1,0 +1,58 @@
+name: fresh-clone-ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: ${{ matrix.label }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            label: Windows x64
+          - os: macos-15
+            label: macOS arm64
+          - os: macos-15-intel
+            label: macOS x86_64
+    defaults:
+      run:
+        working-directory: ${{ github.workspace }}/F1 Telemetry Dashboard
+    steps:
+      - name: Fresh clone into a path containing spaces
+        uses: actions/checkout@v4
+        with:
+          path: F1 Telemetry Dashboard
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.13.7"
+          enable-cache: true
+
+      - name: Create virtual environment (README command 1)
+        run: uv venv --python 3.14
+
+      - name: Install dependencies (README command 2)
+        run: uv pip install -r requirements.txt
+
+      - name: Record OS, architecture, Python and uv versions
+        run: uv run python tests/ci_env.py
+
+      - name: Offline unit tests with external requests blocked
+        run: uv run python tests/run_offline.py
+
+      - name: Reproduce the 2021 British GP exercise from real data
+        run: uv run python scripts/verify_exercise.py
+
+      - name: Start app with README command, exercise demo, stop cleanly
+        run: uv run python tests/ci_smoke.py
