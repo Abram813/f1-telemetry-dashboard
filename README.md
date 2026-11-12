@@ -6,6 +6,8 @@ Built with [FastF1](https://github.com/theOehrly/Fast-F1). The public telemetry 
 
 Repository: <https://github.com/Abram813/f1-telemetry-dashboard>
 
+[![fresh-clone-ci](https://github.com/Abram813/f1-telemetry-dashboard/actions/workflows/ci.yml/badge.svg)](https://github.com/Abram813/f1-telemetry-dashboard/actions/workflows/ci.yml)
+
 ## What the dashboard shows
 
 - Season, Grand Prix, session, qualifying phase, two drivers and one lap per driver.
@@ -93,16 +95,20 @@ The workflow matrix is:
 - `macos-15` — macOS arm64 (Apple Silicon)
 - `macos-15-intel` — macOS x86_64 (Intel)
 
+**Mac architectures verified: `arm64` and `x86_64`.** Both ran the full fresh-clone workflow.
+
 ## Actual test results
 
-Results are filled from the GitHub Actions run for this repository. Local macOS results are from the machine that built the project.
+Final GitHub Actions run: <https://github.com/Abram813/f1-telemetry-dashboard/actions/runs/43282091657> (commit `458268a`). The local run used a fresh clone at a path containing spaces: `/private/var/folders/.../opencode/F1 Telemetry Dashboard Test`.
 
-| Environment | OS / architecture | Python | uv | Offline tests | Real-data exercise | App start + action + shutdown |
-|---|---|---|---|---:|---|---|
-| Local | macOS 26.6.2 / arm64 (Apple M1 Pro) | 3.14.2 | 0.13.7 | See run below | See run below | See run below |
-| CI | Windows x64 | 3.14 | 0.13.7 | Pending | Pending | Pending |
-| CI | macOS arm64 | 3.14 | 0.13.7 | Pending | Pending | Pending |
-| CI | macOS x86_64 | 3.14 | 0.13.7 | Pending | Pending | Pending |
+| Environment | OS / CPU architecture | Python | uv | Offline tests (network blocked) | Real-data exercise | App start + action + shutdown |
+|---|---|---|---:|---|---|---|
+| Local fresh clone | macOS 26.6.2 / arm64 (Apple M1 Pro) | 3.14.2 | 0.13.7 (Homebrew aarch64) | 16 tests OK (0.367 s) | PASS (`+11.128 m`) | PASS, graceful, exit 0, port closed |
+| `windows-latest` | Windows Server 2025 (10.0.26100) / x64 (AMD64) | 3.14.10 | 0.13.7 (x86_64-pc-windows-msvc) | 16 tests OK (0.730 s) | PASS | PASS, graceful, port closed |
+| `macos-15` | macOS 15.8.2 / arm64 | 3.14.10 | 0.13.7 (aarch64-apple-darwin) | 16 tests OK (0.610 s) | PASS | PASS, graceful, port closed |
+| `macos-15-intel` | macOS 15.7.9 / x86_64 (Intel) | 3.14.7 | 0.13.7 (x86_64-apple-darwin) | 16 tests OK (1.325 s) | PASS | PASS, graceful, port closed |
+
+Windows reports shutdown code `3221225786` (`STATUS_CONTROL_C_EXIT`) and macOS arm64 reports `130` (`SIGINT`) because the harness sends the platform's interrupt. Both are expected graceful shutdown signals; the health port was closed in every run.
 
 ## Two-minute VS Code walkthrough
 
